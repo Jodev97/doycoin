@@ -14,7 +14,6 @@ const passport = require('passport')
 const app =express()
 //require('./database')
 //require('./lib/SetupAuth')
-require('./middlewares/SetupWallet')
 
 //----->Settings
 app.set('port',process.env.PORT|| 3000)
@@ -36,10 +35,13 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
-//app.use(wallet.Connect)
 
 //Routes
-//app.use('/api/v1',require('./routes'))
+app.use('/api/v1',require('./routes'))
+
+//var jwt = require('jsonwebtoken');
+//var token = jwt.sign({ foo: 'bar' }, process.env.TOKEN_KEY);
+//console.log(token)
 //Static files
 app.use(express.static(path.join(__dirname,'public')))
 //Start Server

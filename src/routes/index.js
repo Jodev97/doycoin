@@ -1,18 +1,23 @@
 const router = require('express').Router()
 const passport = require('passport')
+const wallet = require('../lib/walletConfig')
+const jwt  = require('jsonwebtoken')
+const {authjwt} = require('../middlewares')
 
-router.get('/',(req,res,next)=>{
-    res.send('home')
-    next()
+
+router.post("/donated",authjwt.verifyToken,async(req,res,next)=>{
+    wallet.sendDonation(req.body)
+    res.status(200).send("ok")
 })
-router.get('/login',(req,res,next)=>{
-    res.send('login')
-    next()
+
+router.post("/authorization",async(req,res,next)=>{
+    var token = jwt.sign({ Auth: 'doycoin' }, process.env.TOKEN_KEY);
+    res.header('Authorization',token)
+    res.status(200).send('ok')
 })
-router.post('/signup',passport.authenticate('local-signup'),async (req,res,next)=>{
-    //console.log(req)
-    res.send('usuario registrado')
-    next()
+
+router.post("/address",async(req,res,next)=>{
+    res.status(200).json({address:process.env.RECIVER_ADDRESS})
 })
 
 module.exports = router
